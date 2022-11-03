@@ -13,23 +13,29 @@ function App() {
   const [qrlist, setQrlist] = useState([])
 
   const getData = async (id='')=>{
-    const { data } = await axios.get(`http://localhost:5000/qrcodes/${id}`)
-    if( !data.error ) setQrlist(prevQrlist => data.data)
+    let list = JSON.parse( localStorage.getItem('qrlist') ) || []
+    if( id !== '' ){
+      list = list.filter( item => item.id === id )
+    }
+    setQrlist(prevQrlist => list)
   }
 
   const setData = async (url)=>{
     const protocol = url.match(/.{1,}:\/\//i)
-    const { data } = await axios.post(`http://localhost:5000/qrcodes`,{
+    let list = JSON.parse( localStorage.getItem('qrlist') ) || []
+    list.push({
+      id: Math.floor(Math.random()*1000000).toString().split('').map(item => String.fromCharCode(65+parseInt(item))).join(''),
       url: url,
       protocol: protocol!==null ? protocol[0].split(':')[0] : ''
     })
-    console.log( data )
+    localStorage.setItem('qrlist', JSON.stringify(list))
     await getData();
   }
 
   const deleteData = async (id) => {
-    const { data } = await axios.delete(`http://localhost:5000/qrcodes/${id}`)
-    console.log( data )
+    let list = JSON.parse( localStorage.getItem('qrlist') ) || []
+    list = list.filter( item => item.id !== id )
+    localStorage.setItem('qrlist', JSON.stringify(list))
     await getData();
   }
 
