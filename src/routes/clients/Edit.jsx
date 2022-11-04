@@ -51,6 +51,9 @@ export default function Edit(props) {
 		}
 		
 	}
+	const backHandler = _ => {
+        navigate('/clients')
+    }
 
 	const newMenu = async (name, currency) => {
 		const { data } = await setMenus({ name, currency, ClientId:clientId })
@@ -62,7 +65,8 @@ export default function Edit(props) {
 				<Box component='form'>
 					<Grid container>
 						<Grid item xs={6}><Typography>Cliente</Typography></Grid>
-						<Grid item xs={6}><Button onClick={saveClient} disabled={!changed}>Save</Button></Grid>
+						<Grid item xs={3}><Button onClick={saveClient} disabled={!changed}>Save</Button></Grid>
+						<Grid item xs={3}><Button onClick={backHandler} disabled={create}>Back</Button></Grid>
 						<Grid item xs={6}>
 							<TextField 
 								variant="outlined"
