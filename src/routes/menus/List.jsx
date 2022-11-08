@@ -9,40 +9,40 @@ import { FormMenu } from "../../components";
 export default function ListClients(props) {
 	const { nameSing, namePlural, getData } = props
 	const navigate = useNavigate()
-	const [entities, setEntities] = useState([])
+	const [menus, setMenus] = useState([])
 
 	useEffect(() => {
 		(async () => {
 			const {data} = await getData( )
             console.log( data )
-            setEntities( prev => data.data )
+            setMenus( prev => data.data )
 		})();
 	  }, []);
 
       const handlerView = userId => {
-        navigate(`/${namePlural}/${userId}`)
+        navigate(`/${menus}/${userId}`)
       }
       const handlerEdit = userId => {
-        navigate(`/${nameSing}/${userId}`)
+        navigate(`/menu/${userId}`)
       }
 
     return(
         <div>
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {entities.map((entity) => (
+            {menus.map((menu) => (
                 <ListItem
-                key={entity.id}
+                key={menu.id}
                 disableGutters
                 secondaryAction={
                     <div>
-                        <Button onClick={_=> handlerView(entity.id) } >View</Button>
-                        <Button onClick={_=> handlerEdit(entity.id) } >edit</Button>
+                        <Button onClick={_=> handlerView(menu.id) } >View</Button>
+                        <Button onClick={_=> handlerEdit(menu.id) } >edit</Button>
                     </div>
                     
                   }
                 >
-                    <ListItemText primary={`${entity.name}`} />
-                    <ListItemText primary={`${entity.currency}`} />
+                    <ListItemText primary={`${menu.name}`} />
+                    <ListItemText primary={`${menu.currency}`} />
                 </ListItem>
             ))}
             </List>

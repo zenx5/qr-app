@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Box, Grid, TextField, Typography, List, Button, Input } from "@mui/material";
 import { trans } from "../../tools/Location";
+import { getClients, setClients, getProducts, setProducts, getMenus, setMenus } from "../../tools/Request";
 import ItemMenu from "../../components/ItemMenu";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { FormMenu } from "../../components";
@@ -11,7 +12,7 @@ export default function Edit(props) {
 	const { id } = useParams()
 	const [ changed, setChanged ] = useState(false)
 	const [ ProductId, setProductId ] = useState(id)
-	const [entity, setEntity] = useState(model)
+	const [menu, setMenu] = useState(model)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -23,47 +24,30 @@ export default function Edit(props) {
 	  }, []);
 
 	const loadData = async () => {
-		const {data} = await getData( id ) 
+		const {data} = await getMenus( id ) 
 		console.log( data )
-		setEntity( prev => data.data[0] )
+		setMenu( prev => data.data[0] )
 	}
 
 	const handlerChangeEntity = (key) => ( {target} )=> {
 		setChanged(true)
-		return setEntity( prev => ({
+		return setMenu( prev => ({
 			...prev,
 			[key]: target.value
 		}))
 	}
 
-	const saveEntity = async () => {
-		const { data } = await setData(entity)
+	const saveMenu = async () => {
+		const { data } = await setMenus(menu)
 		setChanged(false)
 		if(create){
-			navigate(`/${name.toLowerCase()}/${data.data.id}`)
+			navigate(`/menu/${data.data.id}`)
 		}
 		
 	}
 	const backHandler = _ => {
-        navigate('/products')
+        navigate('/menu')
     }
-
-    const keys = Object.keys(model);
-    const fields = keys.map( (key, index) => {
-        let value = model[key];
-        return(
-            <Grid item xs={6} key={index} >
-                <TextField 
-                    variant="outlined"
-                    sx={{ m: 1, width:'-webkit-fill-available' }}
-                    label={trans(key)}
-                    value={entity[key]}
-                    onChange={handlerChangeEntity(key)}
-                    type={value}
-                />
-            </Grid>
-        )
-    })
 
 
   	return (
@@ -72,9 +56,26 @@ export default function Edit(props) {
 				<Box component='form'>
 					<Grid container>
 						<Grid item xs={6}><Typography>{name}</Typography></Grid>
-						<Grid item xs={3}><Button onClick={saveEntity} disabled={!changed}>Save</Button></Grid>
+						<Grid item xs={3}><Button onClick={saveMenu} disabled={!changed}>Save</Button></Grid>
 						<Grid item xs={3}><Button onClick={backHandler} disabled={create}>Back</Button></Grid>
-                        { fields }
+                        <Grid item xs={6} >
+							<TextField 
+								variant="outlined"
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Menu')}
+								value={menu.name}
+								onChange={handlerChangeEntity('name')}
+							/>
+						</Grid>
+						<Grid item xs={6} >
+							<TextField 
+								variant="outlined"
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Currency')}
+								value={menu.currency}
+								onChange={handlerChangeEntity('currency')}
+							/>
+						</Grid>
 					</Grid>
 				</Box>
 			</Grid>

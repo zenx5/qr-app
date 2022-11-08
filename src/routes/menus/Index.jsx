@@ -11,36 +11,30 @@ export default function ListProducts(props) {
 	const { getData } = props
     const { id } = useParams()
 	const navigate = useNavigate()
-	const [entity, setEntity] = useState({})
+	const [menu, setMenu] = useState({})
 
 	useEffect(() => {
 		(async () => {
 			const {data} = await getData( id )
             console.log( data )
-            setEntity( prev => data.data[0] )
+            setMenu( prev => data.data[0] )
 		})();
 	}, []);
 
     const backHandler = _ => {
-        navigate('/products')
+        navigate('/menus')
     }
-
-    const keys = Object.keys(entity);
-    const fields = keys.map( (key, index) => {;
-        return(
-            <ListItemText primary={`${entity[key]}`} key={index} />
-        )
-    })
 
     return(
         <div>
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             
                 <ListItem
-                key={entity.id}
+                key={menu.id}
                 disableGutters
                 >
-                    {fields}
+                    <ListItemText primary={`${menu.name}`} />
+                    <ListItemText primary={`${menu.currency}`} />
                 </ListItem>
             
             </List>

@@ -1,5 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { getProducts, setProducts, getMenus, setMenus } from "./tools/Request";
+import { getClients, setClients, getProducts, setProducts, getMenus, setMenus } from "./tools/Request";
 import ClientEdit from './routes/clients/Edit.jsx'
 import ClientCreate from './routes/clients/Edit.jsx'
 import ClientIndex from './routes/clients/Index.jsx'
@@ -16,6 +16,12 @@ import MenuIndex from './routes/menus/Index.jsx'
 import MenuList from './routes/menus/List.jsx'
 
 export default function App(){
+    const clientModel = {
+        firstname: '',
+        lastname: '',
+        nickname: '',
+        email: '',
+    }
     
     const menuModel = {
         name: '',
