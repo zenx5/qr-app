@@ -16,18 +16,7 @@ import MenuIndex from './routes/menus/Index.jsx'
 import MenuList from './routes/menus/List.jsx'
 
 export default function App(){
-    const clientModel = {
-        firstname: '',
-        lastname: '',
-        nickname: '',
-        email: '',
-    }
-    
-    const menuModel = {
-        name: '',
-        currency: ''
-    }
-    
+        
     return(
         <>
              <BrowserRouter>
