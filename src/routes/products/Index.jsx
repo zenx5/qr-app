@@ -8,21 +8,20 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { FormMenu } from "../../components";
 
 export default function ListProducts(props) {
-	const { getData } = props
     const { id } = useParams()
 	const navigate = useNavigate()
-	const [menu, setMenu] = useState({})
+	const [product, setProduct] = useState({})
 
 	useEffect(() => {
 		(async () => {
-			const {data} = await getData( id )
+			const {data} = await getProducts( id )
             console.log( data )
-            setMenu( prev => data.data[0] )
+            setProduct( prev => data.data[0] )
 		})();
 	}, []);
 
     const backHandler = _ => {
-        navigate('/menus')
+        navigate('/products')
     }
 
     return(
@@ -30,11 +29,11 @@ export default function ListProducts(props) {
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
             
                 <ListItem
-                key={menu.id}
+                key={product.id}
                 disableGutters
                 >
-                    <ListItemText primary={`${menu.name}`} />
-                    <ListItemText primary={`${menu.currency}`} />
+                    <ListItemText primary={`${product.title}`} />
+                    <ListItemText primary={`${product.price}`} />
                 </ListItem>
             
             </List>

@@ -2,17 +2,20 @@ import { useState, useEffect } from "react";
 import { QRCodeCanvas } from "qrcode.react";
 import { Box, Grid, TextField, Typography, List, Button, Input } from "@mui/material";
 import { trans } from "../../tools/Location";
-import { getClients, setClients, getProducts, setProducts, getMenus, setMenus } from "../../tools/Request";
 import ItemMenu from "../../components/ItemMenu";
+import { getProducts, setProducts, setMenus } from "../../tools/Request";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { FormMenu } from "../../components";
 
 export default function Edit(props) {
-	const { create, name, model, getData, setData } = props
+	const { create } = props
 	const { id } = useParams()
 	const [ changed, setChanged ] = useState(false)
 	const [ ProductId, setProductId ] = useState(id)
-	const [menu, setMenu] = useState(model)
+	const [product, setProduct] = useState({
+		title: '',
+        price: 0
+	})
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -24,29 +27,29 @@ export default function Edit(props) {
 	  }, []);
 
 	const loadData = async () => {
-		const {data} = await getMenus( id ) 
+		const {data} = await getProducts( id ) 
 		console.log( data )
-		setMenu( prev => data.data[0] )
+		setProduct( prev => data.data[0] )
 	}
 
-	const handlerChangeEntity = (key) => ( {target} )=> {
+	const handlerChangeProduct = (key) => ( {target} )=> {
 		setChanged(true)
-		return setMenu( prev => ({
+		return setProduct( prev => ({
 			...prev,
 			[key]: target.value
 		}))
 	}
 
-	const saveMenu = async () => {
-		const { data } = await setMenus(menu)
+	const saveProduct = async () => {
+		const { data } = await setProducts(product)
 		setChanged(false)
 		if(create){
-			navigate(`/menu/${data.data.id}`)
+			navigate(`/product/${data.data.id}`)
 		}
 		
 	}
 	const backHandler = _ => {
-        navigate('/menu')
+        navigate('/products')
     }
 
 
@@ -55,25 +58,26 @@ export default function Edit(props) {
       <Grid item xs={9}>
 				<Box component='form'>
 					<Grid container>
-						<Grid item xs={6}><Typography>{name}</Typography></Grid>
-						<Grid item xs={3}><Button onClick={saveMenu} disabled={!changed}>Save</Button></Grid>
+						<Grid item xs={6}><Typography>Producto</Typography></Grid>
+						<Grid item xs={3}><Button onClick={saveProduct} disabled={!changed}>Save</Button></Grid>
 						<Grid item xs={3}><Button onClick={backHandler} disabled={create}>Back</Button></Grid>
-                        <Grid item xs={6} >
+						<Grid item xs={6}>
 							<TextField 
 								variant="outlined"
 								sx={{ m: 1, width:'-webkit-fill-available' }}
-								label={trans('Menu')}
-								value={menu.name}
-								onChange={handlerChangeEntity('name')}
+								label={trans('Title')}
+								value={product.title}
+								onChange={handlerChangeProduct('title')}
 							/>
 						</Grid>
-						<Grid item xs={6} >
-							<TextField 
+						<Grid item xs={6}>
+							<TextField
+                                type='number' 
 								variant="outlined"
 								sx={{ m: 1, width:'-webkit-fill-available' }}
-								label={trans('Currency')}
-								value={menu.currency}
-								onChange={handlerChangeEntity('currency')}
+								label={trans('Price')}
+								value={product.price}
+								onChange={handlerChangeProduct('price')}
 							/>
 						</Grid>
 					</Grid>

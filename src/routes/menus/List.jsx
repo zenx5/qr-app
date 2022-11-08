@@ -3,48 +3,46 @@ import { QRCodeCanvas } from "qrcode.react";
 import { Box, Grid, TextField, Typography, List, Button, ListItem, ListItemText } from "@mui/material";
 import { trans } from "../../tools/Location";
 import ItemMenu from "../../components/ItemMenu";
-import { getClients, setClients, setMenus } from "../../tools/Request";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import { FormMenu } from "../../components";
 
 export default function ListClients(props) {
-    const { create } = props
+	const { nameSing, namePlural, getData } = props
 	const navigate = useNavigate()
-	const [clients, setClients] = useState([])
+	const [menus, setMenus] = useState([])
 
 	useEffect(() => {
 		(async () => {
-			const {data} = await getClients( ) 
+			const {data} = await getData( )
             console.log( data )
-            setClients( prev => data.data )
+            setMenus( prev => data.data )
 		})();
 	  }, []);
 
       const handlerView = userId => {
-        navigate('/clients/'+userId)
+        navigate(`/${menus}/${userId}`)
       }
       const handlerEdit = userId => {
-        navigate('/client/'+userId)
+        navigate(`/menu/${userId}`)
       }
 
     return(
         <div>
             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {clients.map((client) => (
+            {menus.map((menu) => (
                 <ListItem
-                key={client.id}
+                key={menu.id}
                 disableGutters
                 secondaryAction={
                     <div>
-                        <Button onClick={_=> handlerView(client.id) } >View</Button>
-                        <Button onClick={_=> handlerEdit(client.id) } >edit</Button>
+                        <Button onClick={_=> handlerView(menu.id) } >View</Button>
+                        <Button onClick={_=> handlerEdit(menu.id) } >edit</Button>
                     </div>
                     
                   }
-            
                 >
-                    <ListItemText primary={`${client.firstname}`} />
-                    <ListItemText primary={`${client.lastname}`} />
+                    <ListItemText primary={`${menu.name}`} />
+                    <ListItemText primary={`${menu.currency}`} />
                 </ListItem>
             ))}
             </List>
