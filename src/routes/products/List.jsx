@@ -20,10 +20,10 @@ export default function ListClients(props) {
 	  }, []);
 
       const handlerView = userId => {
-        navigate('/products/'+userId)
+        navigate(`/${process.env.REACT_APP_ROUTE_VIEW_PRODUCT}/${userId}`)
       }
       const handlerEdit = userId => {
-        navigate('/products/'+userId)
+        navigate(`/${process.env.REACT_APP_ROUTE_EDIT_PRODUCT}/${userId}`)
       }
 
     return(

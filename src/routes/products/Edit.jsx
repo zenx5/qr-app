@@ -44,12 +44,12 @@ export default function Edit(props) {
 		const { data } = await setProducts(product)
 		setChanged(false)
 		if(create){
-			navigate(`/product/${data.data.id}`)
+			navigate(`/${process.env.REACT_APP_ROUTE_EDIT_PRODUCT}/${data.data.id}`)
 		}
 		
 	}
 	const backHandler = _ => {
-        navigate('/products')
+        window.history.go(-1)
     }
 
 
