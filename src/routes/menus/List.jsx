@@ -1,51 +1,40 @@
 import { useState, useEffect } from "react";
-import { QRCodeCanvas } from "qrcode.react";
-import { Box, Grid, TextField, Typography, List, Button, ListItem, ListItemText } from "@mui/material";
 import { trans } from "../../tools/Location";
-import ItemMenu from "../../components/ItemMenu";
-import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { FormMenu } from "../../components";
+import { useNavigate } from "react-router-dom";
+import { ListView } from "../../components";
+import { getResource } from "../../tools/resourceRequest";
 
 export default function ListClients(props) {
-	const { nameSing, namePlural, getData } = props
-	const navigate = useNavigate()
-	const [entities, setEntities] = useState([])
+  const navigate = useNavigate()
+	const [menus, setMenus] = useState([])
 
-	useEffect(() => {
+  useEffect(() => {
 		(async () => {
-			const {data} = await getData( )
-            console.log( data )
-            setEntities( prev => data.data )
+			const {data} = await getResource('menus', props.client )
+      console.log( data )
+      setMenus( prev => data.data )
 		})();
-	  }, []);
+	}, []);
 
-      const handlerView = userId => {
-        navigate(`/${namePlural}/${userId}`)
-      }
-      const handlerEdit = userId => {
-        navigate(`/${nameSing}/${userId}`)
-      }
+  const handlerView = id => {
+    navigate(`/${process.env.REACT_APP_ROUTE_VIEW_MENU}/${id}`)
+  }
 
-    return(
-        <div>
-            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-            {entities.map((entity) => (
-                <ListItem
-                key={entity.id}
-                disableGutters
-                secondaryAction={
-                    <div>
-                        <Button onClick={_=> handlerView(entity.id) } >View</Button>
-                        <Button onClick={_=> handlerEdit(entity.id) } >edit</Button>
-                    </div>
-                    
-                  }
-                >
-                    <ListItemText primary={`${entity.name}`} />
-                    <ListItemText primary={`${entity.currency}`} />
-                </ListItem>
-            ))}
-            </List>
-        </div>
-    )
+  const handlerEdit = id => {
+    navigate(`/${process.env.REACT_APP_ROUTE_EDIT_MENU}/${id}`)
+  }
+
+  return(<ListView 
+    headers={ [
+      { key: 'name', name: trans('Name'), default: '' },
+      { key: 'currency', name: trans('Currency'), default: '' },
+      { key: 'token', name: trans('Token'), default: 'http://localhost:5000/m/', format: (index, value) => (<a href={`http://localhost:5000/m/${value}`} target='_blank'>http://localhost:5000/m/{value}</a>) },
+      { key: 'Client', name: trans('Client'), default: '', format: (index, item) => item?.email},
+    ] }
+    disableSelection
+    records={menus}
+    onView={handlerView}
+    onEdit={handlerEdit}
+    id={'id'}
+  />)
 }
