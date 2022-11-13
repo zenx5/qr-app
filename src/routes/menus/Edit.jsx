@@ -4,6 +4,7 @@ import { Box, Grid, TextField, Typography, List, Button, ListItem, ListItemButto
 import { trans } from "../../tools/Location";
 import { useNavigate, useParams } from "react-router-dom";
 import { getResource, setResource } from "../../tools/resourceRequest";
+import { PickerColor } from '../../components'
 
 export default function Edit(props) {
 	const { create, view } = props
@@ -11,6 +12,11 @@ export default function Edit(props) {
 	const [ changed, setChanged ] = useState(false)
 	const [ protocol, setProtocol ] = useState('https')
 	const [ clients, setClients ] = useState([])
+	const [ tokens, setTokens ] = useState([])
+	const [ control, setControl ] = useState({
+		changed: false, 
+		count: 0
+	})
 	const [ menu, setMenu ] = useState({
 		name: '',
 		currency: '',
@@ -29,6 +35,7 @@ export default function Edit(props) {
 	useEffect(() => {
 		(async () => {
 			await getClients()
+			//await getTokens()
 			if( !create ){
 				await loadData()
 			}
@@ -36,9 +43,16 @@ export default function Edit(props) {
 	}, []);
 
 	const loadData = async () => {
-		const { data } = await getResource('menus', id )
+		const { data } = await getResource('menus', id )		
 		console.log( data )
-		setMenu( prev => data.data[0] )
+		if( data.data.length === 0 ) {
+			alert(`No existe el menu con id ${id}`)
+			navigate(`/${process.env.REACT_APP_ROUTE_CREATE_MENU}`)
+		}
+		else{
+			setMenu( prev => data.data[0] )
+		}
+		
 	}
 
 	const getClients = async () => {
@@ -47,9 +61,15 @@ export default function Edit(props) {
 		setClients( prev => data.data )
 	}
 
+	const getTokens = async () => {
+		const { data } = await getResource('menus' )
+		console.log(  data.data.map( element => element.token  ))
+		setTokens( prev => data.data.map( element => element.token ))
+	}
+
 	const handlerSaveMenu = async () => {
 		if( create ){
-			const { data } = await setResource('menus', { ...menu, ClientId: props.client })
+			const { data } = await setResource('menus', { ...menu, ClientId: props.client?props.client: menu.ClientId })
 			menu.Products.forEach( async product => {
 				await setResource('products', { ...product, MenuId: data.data.id })
 			})
@@ -58,7 +78,9 @@ export default function Edit(props) {
 				protocol: protocol,
 				MenuId: data.data.id 
 			} )
-			navigate(`/${process.env.REACT_APP_ROUTE_EDIT_MENU}/${data.data.id}`)
+			//navigate(`/${process.env.REACT_APP_ROUTE_EDIT_MENU}/${data.data.id}`)
+			alert('Menu Created')
+			backHandler()
 		}else{
 			await setResource('menus', {...menu, id:id})
 			await loadData()
@@ -68,10 +90,17 @@ export default function Edit(props) {
 
 	const handlerChangeMenu = (key) => ( {target} )=> {
 		setChanged(true)
-		return setMenu( prev => ({
+		setMenu( prev => ({
 			...prev,
 			[key]: target.value
 		}))
+	}
+
+	
+
+	const validateColor = (key) => (color) => {
+		console.log('color',color)
+		handlerChangeMenu(key)({ target: { value: color } })
 	}
 
 	const handlerChangeQrcode = ({target}) => {
@@ -105,7 +134,7 @@ export default function Edit(props) {
 	}
 
 	const handlerChangeProduct = (key) => ({target}) => {
-		return setProduct( prev => ({
+		setProduct( prev => ({
 			...prev,
 			[key]: target.value
 		}))
@@ -122,9 +151,14 @@ export default function Edit(props) {
 		setProduct(prev => ({ name:'', price: 0}))
 	}
 
+	const validateToken = ({target}) => {
+		
+	}
+
 	const backHandler = _ => {
         window.history.go(-1)
     }
+
 
   	return (
     <Grid container sx={{ height: '100vh', padding: '10px'}}>
@@ -173,10 +207,62 @@ export default function Edit(props) {
 								sx={{ m: 1, width:'-webkit-fill-available' }}
 								disabled={!create}
 								defaultValue={-1}
+								label={'Client '+menu.ClientId}
+								value={menu.ClientId}
 								onChange={handlerChangeMenu('ClientId')}>
 								<MenuItem value={-1}>{ create ? 'Seleccione' : clients.filter( client => client?.id === menu.ClientId )?.at(0)?.nickname }</MenuItem>
 								{clients && clients.map( client => (<MenuItem value={client?.id}>{client?.nickname}</MenuItem>) )} 
 							</Select>
+						</Grid>
+						<Grid item xs={5}>
+							<TextField 
+								variant="outlined"
+								disabled={view}
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Size Title')}
+								value={menu.sizeTitle}
+								onChange={handlerChangeMenu('sizeTitle')}
+							/>
+						</Grid>
+						<Grid item xs={4}>
+							<TextField
+								variant="outlined"
+								disabled={view}
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Color Title')}
+								value={ menu.colorTitle }
+								onChange={handlerChangeMenu('colorTitle')}
+							/>
+						</Grid>
+						<Grid item xs={5}>
+							<TextField 
+								variant="outlined"
+								disabled={view}
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Size Items')}
+								value={menu.sizeItem}
+								onChange={handlerChangeMenu('sizeItem')}
+							/>
+						</Grid>
+						<Grid item xs={4}>
+							<TextField
+								variant="outlined"
+								disabled={view}
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Color Item')}
+								value={ menu.colorItem }
+								onChange={handlerChangeMenu('colorItem')}
+							/>
+						</Grid>
+						<Grid item xs={9}>
+							<TextField 
+								variant="outlined"
+								disabled={view}
+								sx={{ m: 1, width:'-webkit-fill-available' }}
+								label={trans('Background Image')}
+								value={menu.background}
+								onChange={handlerChangeMenu('background')}
+							/>
 						</Grid>
 					</Grid>
 					<Grid container style={{borderTop:'1px solid #efefef', marginTop: '10px', paddingTop: '10px'}}>
@@ -236,8 +322,10 @@ export default function Edit(props) {
 				</Box>
 		</Grid>
       	<Grid item xs={3} sx={{ marginTop:'20px', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'start' }}>
-        	<QRCodeCanvas value={protocol + '://' + ( menu?.Qrcode?.url.indexOf('://') === -1 ? menu?.Qrcode?.url : menu?.Qrcode?.url.split('://')[1] )} />
-				<TextField 
+        	<QRCodeCanvas value={`http://localhost:3000/m/${menu.token}`} />
+        	{/* <QRCodeCanvas value={protocol + '://' + ( menu?.Qrcode?.url.indexOf('://') === -1 ? menu?.Qrcode?.url : menu?.Qrcode?.url.split('://')[1] )} /> */}
+			<TextField sx={{ m: 1, width:'-webkit-fill-available' }} variant="outlined" disabled={true} value={`http://localhost:3000/m/${menu.token}`} onina={validateToken}/>
+				{/* <TextField 
 					variant="outlined"
 					disabled={view}
 					sx={{ m: 1, width:'-webkit-fill-available' }}
@@ -257,11 +345,10 @@ export default function Edit(props) {
 								onChange={ event => setProtocol( event.target.value ) }>
 									<MenuItem value={'http'}>http://</MenuItem>
 									<MenuItem value={'https'}>https://</MenuItem>
-									{/* <MenuItem value={'ftp://'}>ftp://</MenuItem>
-									<MenuItem value={'ftps://'}>ftps://</MenuItem> */}
+					
 							</Select>
 					  }}
-				/>        	
+				/> */}
       	</Grid>
     </Grid>
   );

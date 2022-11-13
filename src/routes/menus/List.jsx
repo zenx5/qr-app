@@ -28,7 +28,7 @@ export default function ListClients(props) {
     headers={ [
       { key: 'name', name: trans('Name'), default: '' },
       { key: 'currency', name: trans('Currency'), default: '' },
-      { key: 'token', name: trans('Token'), default: 'http://localhost:5000/m/', format: (index, value) => (<a href={`http://localhost:5000/m/${value}`} target='_blank'>http://localhost:5000/m/{value}</a>) },
+      { key: 'token', name: trans('Access'), default: 'http://localhost:3000/m/', format: (index, value) => (<a href={`http://localhost:3000/m/${value}`} target='_blank'>http://localhost:3000/m/{value}</a>) },
       { key: 'Client', name: trans('Client'), default: '', format: (index, item) => item?.email},
     ] }
     disableSelection

@@ -13,6 +13,7 @@ import MenuEdit from './routes/menus/Edit.jsx'
 import MenuCreate from './routes/menus/Edit.jsx'
 import MenuIndex from './routes/menus/Edit.jsx'
 import MenuList from './routes/menus/List.jsx'
+import MenuView from './routes/menus/Index.jsx'
 
 import Main from "./routes/Main.jsx"
 
@@ -32,6 +33,8 @@ export default function App(){
                     <Route path={`${process.env.REACT_APP_ROUTE_EDIT_MENU}/:id`} element={<MenuEdit />} />
                     <Route path={`${process.env.REACT_APP_ROUTE_LIST_MENU}`} element={<MenuList />} />
                     <Route path={`${process.env.REACT_APP_ROUTE_VIEW_MENU}/:id`} element={<MenuIndex view />} />
+                    
+                    <Route path='m/:token' element={<MenuView /> } /> 
 
                     {/* <Route path="product" element={<ProductCreate create />} />
                     <Route path="product/:id" element={<ProductEdit />} />

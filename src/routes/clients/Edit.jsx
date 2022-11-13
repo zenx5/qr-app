@@ -48,7 +48,9 @@ export default function Edit(props) {
 		const { data } = await setResource('clients', client)
 		setChanged(false)
 		if(create){
-			navigate(`/${process.env.REACT_APP_ROUTE_EDIT_CLIENT}/${data.data.id}`)
+			alert('Client Created')
+			window.history.go(-1)
+			//navigate(`/${process.env.REACT_APP_ROUTE_EDIT_CLIENT}/${data.data.id}`)
 		}
 		
 	}
@@ -63,13 +65,17 @@ export default function Edit(props) {
 		navigate(`/${process.env.REACT_APP_ROUTE_EDIT_MENU}/${id}`)
 	}
 
+	const handlerNewMenu = () => {
+		navigate(`/${process.env.REACT_APP_ROUTE_CREATE_MENU}`)
+	}
+
   	return (
     <Grid container sx={{ height: '100vh', padding: '10px'}}>
       <Grid item xs={12}>
 			<Box component='form'>
 				<Grid container>
 					<Grid item xs={6}>
-						<Typography style={{fontWeight:'bold', margin:'8px'}}>{trans('Menus')}: </Typography>
+						<Typography style={{fontWeight:'bold', margin:'8px'}}>{trans('Clients')}: </Typography>
 					</Grid>
 					<Grid item xs={3}><Button onClick={saveClient} disabled={!changed}>Save</Button></Grid>
 					<Grid item xs={3}><Button onClick={backHandler}>Back</Button></Grid>
@@ -117,14 +123,14 @@ export default function Edit(props) {
 						<Typography style={{fontWeight:'bold', margin:'8px'}}>{trans('Menus')}: </Typography>
 					</Grid>)}
 					{ client.Menus && (<Grid item xs={3} style={{display:'flex', justifyContent:'end', marginTop: '10px'}}>
-						{ !view && <Button variant="contained">New Menu</Button> }
+						{ !view && <Button variant="contained" onClick={handlerNewMenu}>New Menu</Button> }
 					</Grid>)}
 					{ client.Menus && (<Grid item xs={12}>
 						<ListView 
 							headers={ [
 							{ key: 'name', name: trans('Name'), default: '' },
 							{ key: 'currency', name: trans('Currency'), default: '' },
-							{ key: 'token', name: trans('Token'), default: 'http://localhost:5000/m/', format: (index, value) => (<a href={`http://localhost:5000/m/${value}`} target='_blank'>http://localhost:5000/m/{value}</a>) },
+							{ key: 'token', name: trans('Access'), default: 'http://localhost:3000/m/', format: (index, value) => (<a href={`http://localhost:3000/m/${value}`} target='_blank'>http://localhost:3000/m/{value}</a>) },
 							{ key: 'Client', name: trans('Client'), default: '', format: () => client.email},
 							] }
 							disableSelection

@@ -21,7 +21,7 @@ export default function ListView(props) {
   const [page, setPage] = React.useState(1);
 
   let records = (() => {
-    if (sort !== null && sortBy !== null) {
+    if (sort !== undefined && sort !== null && sortBy !== null) {
       return props.records.sort((row1, row2) => {
         if (sort === true) {
           return row1[sortBy] < row2[sortBy] ? 1 : -1;

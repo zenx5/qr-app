@@ -18,10 +18,10 @@ export default function ListClients() {
 	  }, []);
 
     const handlerView = userId => {
-      navigate(`/${process.env.REACT_APP_ROUTE_VIEW_MENU}/${userId}`)
+      navigate(`/${process.env.REACT_APP_ROUTE_VIEW_CLIENT}/${userId}`)
     }
     const handlerEdit = userId => {
-      navigate(`/${process.env.REACT_APP_ROUTE_EDIT_MENU}/${userId}`)
+      navigate(`/${process.env.REACT_APP_ROUTE_EDIT_CLIENT}/${userId}`)
     }
 
     const backHandler = () => {
@@ -31,7 +31,7 @@ export default function ListClients() {
     return(
     <Grid container>
           <Grid item xs={9}>
-						<Typography style={{fontWeight:'bold', margin:'8px'}}>{trans('Menus')}: </Typography>
+						<Typography style={{fontWeight:'bold', margin:'8px'}}>{trans('Clients')}: </Typography>
 					</Grid>
 					<Grid item xs={3}><Button onClick={backHandler}>Back</Button></Grid>
           <Grid item xs={12}>
